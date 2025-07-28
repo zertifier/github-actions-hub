@@ -2,11 +2,11 @@ name: Discord Notify
 
 on:
   workflow_call:
+    secrets:
+        webhook_url:
+          required: true
     inputs:
       status:
-        required: true
-        type: string
-      webhook_url:
         required: true
         type: string
       message:
@@ -28,7 +28,7 @@ jobs:
         shell: bash
         run: |
           STATUS="${{ inputs.status }}"
-          WEBHOOK_URL="${{ inputs.webhook_url }}"
+          WEBHOOK_URL="${{ secrets.webhook_url }}"
           MSG="${{ inputs.message }}"
           NAME="${{ inputs.name }}"
 
