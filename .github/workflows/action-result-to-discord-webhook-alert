@@ -15,9 +15,6 @@ on:
       name:
         required: false
         type: string
-      thread:
-        required: false
-        type: string
       runner:
         required: false
         type: string
@@ -34,7 +31,6 @@ jobs:
           WEBHOOK_URL="${{ inputs.webhook_url }}"
           MSG="${{ inputs.message }}"
           NAME="${{ inputs.name }}"
-          THREAD="${{ inputs.thread }}"
 
           if [[ "$STATUS" == "success" ]]; then
             FLAGS=4096
@@ -47,10 +43,10 @@ jobs:
           # Set defaults if inputs empty
           MSG=${MSG:-$DEFAULT_MSG}
           NAME=${NAME:-"GitHub Action Bot"}
-
-          PARAMS="with_components=true"
-          if [ -n "$THREAD" ]; then
-            PARAMS="with_components=true&thread_id=$THREAD"
+          # Decide separator ? or &
+          PARAMS="?with_components=true"
+          if [[ "$WEBHOOK_URL" == *\?* ]]; then
+            PARAMS="&with_components=true"
           fi
 
           curl -H "Content-Type: application/json" \
@@ -73,4 +69,4 @@ jobs:
                 }
               ]
             }" \
-            "$WEBHOOK_URL?$PARAMS"
+            "$WEBHOOK_URL$PARAMS"
